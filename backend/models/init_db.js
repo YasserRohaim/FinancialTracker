@@ -1,4 +1,4 @@
-const pool = require('./db'); // Ensure this points to your db.js file
+const pool = require('./db');
 
 const createTables = async () => {
   try {
@@ -6,9 +6,11 @@ const createTables = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(100),
+        base_currency VARCHAR(3) DEFAULT 'USD',
+        current_budget NUMERIC DEFAULT 0
       );
     `);
     console.log('Users table created successfully.');
@@ -17,25 +19,18 @@ const createTables = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS transactions (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
+        user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         amount NUMERIC NOT NULL,
-        description TEXT,
-        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        original_currency VARCHAR(3) NOT NULL,
+        transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        description TEXT
       );
     `);
     console.log('Transactions table created successfully.');
   } catch (err) {
-    console.error('Error creating tables:', err);
+    console.error('Error creating tables', err);
   } finally {
-    try {
-      // Ensure the connection pool is closed
-      await pool.end();
-      console.log('Database connection closed.');
-    } catch (endErr) {
-      console.error('Error closing the connection pool:', endErr);
-    }
-    // Explicitly exit the process
-    process.exit(0);
+    pool.end(); // Close the database connection pool
   }
 };
 
