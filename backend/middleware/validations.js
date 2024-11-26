@@ -1,4 +1,4 @@
-const { object, string, number, mixed } =require('yup');
+const { object, string, number, mixed, date } =require('yup');
 
 
 const userSchema = object({
@@ -10,6 +10,14 @@ const userSchema = object({
     .oneOf(['USD', 'EUR', 'JPY', 'AED','EGP','SAR'], 'Invalid currency') 
     .required('Preferred currency is required'),
   });
+
+  const transactionSchema = object({
+    amount: number().required('Amount is required.').positive('Amount must be a positive number.'),
+    origninal_currency :  mixed()
+      .oneOf(['USD', 'EUR', 'JPY', 'AED','EGP','SAR'], 'Invalid currency') 
+      .required('Original currency is required'),
+    transaction_date: date().max(new Date(), 'Transaction date cannot be in the future.'),
+    description: string().max(500, 'Description cannot exceed 500 characters.').optional()})
 
   const validateSchema = (schema) => {
     return (req, res, next) => {
@@ -26,4 +34,4 @@ const userSchema = object({
     };
   };
 
-module.exports= {userSchema, validateSchema };
+module.exports= {userSchema,transactionSchema, validateSchema };
