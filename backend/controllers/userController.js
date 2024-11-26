@@ -3,16 +3,16 @@ const { object, string, number, date } =require('yup');
 
 var userSchema = object({
     name: string().required(),
-    age: number().required().positive().integer(),
+    password:string().min(8,"minimum length is 8").required(),
     email: string().email(),
-    website: string().url().nullable(),
-    createdOn: date().default(() => new Date()),
+    budget: number.positive(),
+    preferredCurrency : number().min(0).max(100)
   });
 exports.createUser = async (req, res) => {
   try {
-    const { username, email, password, budget, preferredCurrency } = req.body;
+    const { name, email, password, budget, preferredCurrency } = req.body;
     
-    const user = new User({ username, email, passwordHash, budget, preferredCurrency });
+    const user = new User({ name, email, passwordHash, budget, preferredCurrency });
     await user.save();
     res.status(201).json(user);
   } catch (error) {
