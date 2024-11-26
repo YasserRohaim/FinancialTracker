@@ -1,8 +1,13 @@
 const express= require('express');
-const userRoutes = require('routers/userRoutes');
-
-
+const dotenv= require('dotenv');
+const userRouter = require('./routers/userRoutes');
+dotenv.config();
 app=express();
+app.use(express.json());
 
-app.use('/users/' ,userRoutes);
-app.listen (30001);
+const PORT= process.env.PORT;
+app.use('/users' ,userRouter);
+app.listen (PORT,()=>{
+    console.log(`listening on port ${PORT}`);
+
+}); 

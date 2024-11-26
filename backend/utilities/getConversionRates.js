@@ -1,5 +1,5 @@
  const getConversionRates = async(base,currencies) => {
- const apiKey = "fxf_ZxBMjIG3kCUWozSPT47n";
+ const API_KEY = process.env.CURRENCY_API_KEY;
  fetch(
     `https://api.fxfeed.io/v1/latest?base=${base}&currencies=${currencies.join()}&api_key=${apiKey}`
   )
