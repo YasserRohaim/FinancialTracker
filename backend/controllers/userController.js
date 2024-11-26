@@ -1,5 +1,6 @@
 const db = require('../models/db.js');
 const bcrypt= require('bcrypt')
+const jwt =require('jsonwebtoken')
 
 exports.createUser = async (req, res) => {
     const { name, email, password, budget, preferredCurrency } = req.body;
@@ -19,3 +20,48 @@ exports.createUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Query the database for the user by email
+    const query = 'SELECT * FROM users WHERE email = $1';
+    const result = await db.query(query, [email]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const user = result.rows[0];
+
+    // Compare the provided password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN } 
+    );
+
+    // Return the token to the client
+    res.status(200).json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'An error occurred during login' });
+  }
+};
+
