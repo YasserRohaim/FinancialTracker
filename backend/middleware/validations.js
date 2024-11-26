@@ -13,7 +13,7 @@ const userSchema = object({
 
   const transactionSchema = object({
     amount: number().required('Amount is required.').positive('Amount must be a positive number.'),
-    origninal_currency :  mixed()
+    original_currency :  mixed()
       .oneOf(['USD', 'EUR', 'JPY', 'AED','EGP','SAR'], 'Invalid currency') 
       .required('Original currency is required'),
     transaction_date: date().max(new Date(), 'Transaction date cannot be in the future.'),
