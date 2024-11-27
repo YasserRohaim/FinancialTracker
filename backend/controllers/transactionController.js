@@ -79,12 +79,13 @@ const budget = userRow.rows[0].current_budget;
         amount: transaction.amount * rate,
         currency: userCurrency,
       }));
-      budget=budget*rate;s
+      budget=budget*rate;
     }
 
     res.status(200).json({
       message: 'Transactions retrieved successfully',
       transactions: transactions,
+      budget: budget
     });
   } catch (error) {
     console.error('Error retrieving transactions:', error.message);
