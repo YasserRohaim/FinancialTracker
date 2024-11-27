@@ -31,7 +31,6 @@ const Transactions = () => {
       });
   }, [navigate]);
 
-  // Generate chart data for spending insights
   useEffect(() => {
     const currencyTotals = transactions.reduce((acc, transaction) => {
       acc[transaction.original_currency] =
@@ -51,12 +50,11 @@ const Transactions = () => {
     });
   }, [transactions]);
 
-  // Formik for adding a new transaction
   const formik = useFormik({
     initialValues: {
       amount: "",
       original_currency: "",
-      transaction_date: Date.new,
+      transaction_date: "",
       description: "",
     },
     validationSchema: yup.object({
@@ -65,9 +63,7 @@ const Transactions = () => {
         .string()
         .oneOf(currencyOptions, "Invalid currency")
         .required("Currency is required."),
-      transaction_date: yup
-        .date()
-        .max(new Date(), "Date cannot be in the future."),
+      transaction_date: yup.date().max(new Date(), "Date cannot be in the future.").optional(),
       description: yup.string().max(500, "Description cannot exceed 500 characters."),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -102,52 +98,52 @@ const Transactions = () => {
   };
 
   return (
-    <div className="transactions-container">
-      <header className="transactions-header">
-        <h1>Transactions</h1>
-        <button onClick={logout} className="logout-button">
-          Logout
-        </button>
+    <div className="enhanced-transactions-container">
+      <header className="header">
+        <h2>Transactions</h2>
+        <button onClick={logout} className="logout-button">Logout</button>
       </header>
-      <div className="transactions-content">
-        <div className="transactions-list">
-          <h2>Your Transactions</h2>
+      <div className="content-grid">
+        <div className="card">
+          <h3>Your Transactions</h3>
           {transactions.length > 0 ? (
-            <table className="transactions-table">
-              <thead>
-                <tr>
-                  <th>Amount</th>
-                  <th>Currency</th>
-                  <th>Date</th>
-                  <th>Description</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((transaction) => (
-                  <tr key={transaction.id}>
-                    <td>${transaction.amount}</td>
-                    <td>{transaction.original_currency}</td>
-                    <td>{new Date(transaction.transaction_date).toLocaleDateString()}</td>
-                    <td>{transaction.description || "N/A"}</td>
-                    <td>
-                      <button
-                        onClick={() => handleDelete(transaction.id)}
-                        className="delete-button"
-                      >
-                        Delete
-                      </button>
-                    </td>
+            <div className="transactions-table-container">
+              <table className="transactions-table">
+                <thead>
+                  <tr>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {transactions.map((transaction) => (
+                    <tr key={transaction.id}>
+                      <td>${transaction.amount}</td>
+                      <td>{transaction.original_currency}</td>
+                      <td>{new Date(transaction.transaction_date).toLocaleDateString()}</td>
+                      <td>{transaction.description || "N/A"}</td>
+                      <td>
+                        <button
+                          onClick={() => handleDelete(transaction.id)}
+                          className="delete-button"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : (
-            <p className="no-transactions">No transactions found.</p>
+            <p>No transactions found.</p>
           )}
         </div>
-        <div className="transactions-form">
-          <h2>Add Transaction</h2>
+        <div className="card">
+          <h3>Add Transaction</h3>
           <form onSubmit={formik.handleSubmit} className="form-style">
             <input
               type="number"
@@ -156,7 +152,6 @@ const Transactions = () => {
               value={formik.values.amount}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="form-input"
             />
             {formik.touched.amount && formik.errors.amount && (
               <p className="error">{formik.errors.amount}</p>
@@ -166,7 +161,6 @@ const Transactions = () => {
               value={formik.values.original_currency}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="form-input"
             >
               <option value="">Select Currency</option>
               {currencyOptions.map((currency) => (
@@ -184,39 +178,35 @@ const Transactions = () => {
               value={formik.values.transaction_date}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="form-input"
             />
             {formik.touched.transaction_date && formik.errors.transaction_date && (
               <p className="error">{formik.errors.transaction_date}</p>
             )}
             <textarea
               name="description"
-              placeholder="Description (Optional)"
+              placeholder="Description (optional)"
               value={formik.values.description}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              className="form-input"
             />
             {formik.touched.description && formik.errors.description && (
               <p className="error">{formik.errors.description}</p>
             )}
-            <button type="submit" className="submit-button">
-              Add Transaction
-            </button>
+            <button type="submit" className="submit-button">Add Transaction</button>
           </form>
         </div>
-        <div className="transactions-insights">
-          <h2>Spending Insights</h2>
-          {Object.keys(chartData).length > 0 ? (
+        <div className="card">
+          <h3>Spending Insights</h3>
+          {chartData.labels ? (
             <div className="pie-chart-container">
-              <Pie data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
+              <Pie data={chartData} />
             </div>
           ) : (
-            <p className="no-data">No data to display.</p>
+            <p>No data available.</p>
           )}
         </div>
       </div>
-      {message && <p className="transactions-message">{message}</p>}
+      {message && <div className="message">{message}</div>}
     </div>
   );
 };

@@ -39,7 +39,6 @@ exports.createTransaction = async (req, res) => {
 
     const { rows } = await db.query(query, values);
 
-    // Return the created transaction
     res.status(201).json({"transaction":rows[0]});
   } catch (error) {
     res.status(500).json({ message: 'Error creating transaction', error: error.message });
@@ -47,27 +46,52 @@ exports.createTransaction = async (req, res) => {
 };
 
 exports.getUserTransactions = async (req, res) => {
-    const userId = req.user.id; 
-    try {
-      const result = await db.query(
-        'SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC',
-        [userId]
-      );
-  
-      if (result.rows.length === 0) {
-        console.log(userId);
-        return res.status(404).json({ message: 'No transactions found for this user.' });
-      }
-  
-      res.status(200).json({
-        message: 'Transactions retrieved successfully',
-        transactions: result.rows,
-      });
-    } catch (error) {
-      console.error('Error retrieving transactions:', error.message);
-      res.status(500).json({ error: 'An error occurred while fetching transactions.' });
+  const userId = req.user.id; 
+  const userRow =await db.query ('SELECT base_currency,current_budget FROM users WHERE id = $1 ',
+[userId]);
+console.log(userRow);
+const userCurrency= userRow.rows[0].base_currency;
+const budget = userRow.rows[0].current_budget;
+
+  try {
+    const result = await db.query(
+      'SELECT * FROM transactions WHERE user_id = $1 ORDER BY transaction_date DESC',
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No transactions found for this user.' });
     }
-  };
+
+    let transactions = result.rows;
+
+    // Convert transaction amounts to user's preferred currency if it's not USD
+    if (userCurrency !== 'USD') {
+      const conversionRates = await getConversionRates('USD', [userCurrency]); // Get conversion rate from USD to user's currency
+      const rate = conversionRates[userCurrency];
+
+      if (!rate) {
+        return res.status(400).json({ message: 'Unable to fetch conversion rate for the specified currency.' });
+      }
+
+      transactions = transactions.map((transaction) => ({
+        ...transaction,
+        amount: transaction.amount * rate,
+        currency: userCurrency,
+      }));
+      budget=budget*rate;s
+    }
+
+    res.status(200).json({
+      message: 'Transactions retrieved successfully',
+      transactions: transactions,
+    });
+  } catch (error) {
+    console.error('Error retrieving transactions:', error.message);
+    res.status(500).json({ error: 'An error occurred while fetching transactions.' });
+  }
+};
+
   exports.deleteTransaction = async (req, res) => {
     try {
       const userId = req.user.id; 

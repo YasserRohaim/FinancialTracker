@@ -7,15 +7,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Unified Signin/Signup Component */}
-        <Route path="/signup" element={<SigninSignup />} />
         <Route path="/signin" element={<SigninSignup />} />
+        <Route path="/signup" element={<SigninSignup />} />
 
-        {/* Transactions page (protected route logic can be added later) */}
         <Route path="/transactions" element={<Transactions />} />
 
-        {/* Default route redirects to /signin */}
-        <Route path="*" element={<Navigate to="/signin" />} />
+        <Route path="*" element={<Navigate to="/transactions" />} />
       </Routes>
     </Router>
   );
