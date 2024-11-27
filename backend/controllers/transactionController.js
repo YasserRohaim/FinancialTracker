@@ -85,7 +85,8 @@ const budget = userRow.rows[0].current_budget;
     res.status(200).json({
       message: 'Transactions retrieved successfully',
       transactions: transactions,
-      budget: budget
+      budget: budget,
+      currency: userCurrency
     });
   } catch (error) {
     console.error('Error retrieving transactions:', error.message);

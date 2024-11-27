@@ -13,9 +13,57 @@ const currencyOptions = ["USD", "EUR", "JPY", "AED", "EGP", "SAR"];
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
-  const [chartData, setChartData] = useState({});
+  const [chartData, setChartData] = useState(null);
   const [message, setMessage] = useState("");
+  const [budget, setBudget] = useState(0);
+  const [remainingBudget, setRemainingBudget] = useState(0);
+  const [userCurrency, setUserCurrency] = useState(""); // New state for user currency
   const navigate = useNavigate();
+
+  const calculateRemainingBudget = (budget, transactions) => {
+    const totalSpent = transactions.reduce((sum, transaction) => {
+      return sum + Number(transaction.amount || 0);
+    }, 0);
+    return budget - totalSpent;
+  };
+
+  const generateChartData = (transactions) => {
+    if (!transactions.length) return null;
+
+    const currencyTotals = transactions.reduce((acc, transaction) => {
+      const { original_currency, amount } = transaction;
+      if (original_currency && amount) {
+        acc[original_currency] = (acc[original_currency] || 0) + Number(amount);
+      }
+      return acc;
+    }, {});
+
+    return {
+      labels: Object.keys(currencyTotals),
+      datasets: [
+        {
+          label: "Spending by Currency",
+          data: Object.values(currencyTotals),
+          backgroundColor: [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966FF",
+            "#FF9F40",
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966FF",
+            "#FF9F40",
+          ],
+        },
+      ],
+    };
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -23,8 +71,19 @@ const Transactions = () => {
       navigate("/signin");
       return;
     }
+
     fetchTransactions(token)
-      .then((res) => setTransactions(res.data.transactions))
+      .then((res) => {
+        const fetchedTransactions = res.data.transactions || [];
+        const userBudget = Number(res.data.budget || 0);
+        const userCurrency = res.data.currency || "N/A"; // Extract user currency from response
+
+        setTransactions(fetchedTransactions);
+        setBudget(userBudget);
+        setUserCurrency(userCurrency); // Update state with user currency
+        setRemainingBudget(calculateRemainingBudget(userBudget, fetchedTransactions));
+        setChartData(generateChartData(fetchedTransactions));
+      })
       .catch((err) => {
         setMessage("Failed to fetch transactions.");
         console.error(err);
@@ -32,23 +91,9 @@ const Transactions = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const currencyTotals = transactions.reduce((acc, transaction) => {
-      acc[transaction.original_currency] =
-        (acc[transaction.original_currency] || 0) + transaction.amount;
-      return acc;
-    }, {});
-
-    setChartData({
-      labels: Object.keys(currencyTotals),
-      datasets: [
-        {
-          data: Object.values(currencyTotals),
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#FFC107", "#8E44AD"],
-          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4CAF50", "#FFC107", "#8E44AD"],
-        },
-      ],
-    });
-  }, [transactions]);
+    setRemainingBudget(calculateRemainingBudget(budget, transactions));
+    setChartData(generateChartData(transactions));
+  }, [transactions, budget]);
 
   const formik = useFormik({
     initialValues: {
@@ -103,6 +148,11 @@ const Transactions = () => {
         <h2>Transactions</h2>
         <button onClick={logout} className="logout-button">Logout</button>
       </header>
+      <div className="budget-overview">
+        <p>Budget: {budget}</p>
+        <p>Remaining Budget: {remainingBudget}</p>
+        <p>User Currency: {userCurrency}</p> {/* Display user currency */}
+      </div>
       <div className="content-grid">
         <div className="card">
           <h3>Your Transactions</h3>
@@ -121,7 +171,7 @@ const Transactions = () => {
                 <tbody>
                   {transactions.map((transaction) => (
                     <tr key={transaction.id}>
-                      <td>${transaction.amount}</td>
+                      <td>{transaction.amount}</td>
                       <td>{transaction.original_currency}</td>
                       <td>{new Date(transaction.transaction_date).toLocaleDateString()}</td>
                       <td>{transaction.description || "N/A"}</td>
@@ -197,7 +247,7 @@ const Transactions = () => {
         </div>
         <div className="card">
           <h3>Spending Insights</h3>
-          {chartData.labels ? (
+          {chartData ? (
             <div className="pie-chart-container">
               <Pie data={chartData} />
             </div>
