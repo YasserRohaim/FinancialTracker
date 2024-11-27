@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import SigninSignup from "./pages/SinginSignup";
+import SigninSignup from "./pages/SigninSignup";
 import Transactions from "./pages/Transactions";
 
 function App() {

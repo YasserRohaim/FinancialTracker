@@ -16,7 +16,7 @@ const userSchema = object({
     original_currency :  mixed()
       .oneOf(['USD', 'EUR', 'JPY', 'AED','EGP','SAR'], 'Invalid currency') 
       .required('Original currency is required'),
-    transaction_date: date().max(new Date(), 'Transaction date cannot be in the future.'),
+    transaction_date: date().max(new Date(), 'Transaction date cannot be in the future.').optional(),
     description: string().max(500, 'Description cannot exceed 500 characters.').optional()})
 
   const validateSchema = (schema) => {

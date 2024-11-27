@@ -27,7 +27,7 @@ exports.createTransaction = async (req, res) => {
     const query = `
       INSERT INTO transactions (user_id, amount, original_currency, transaction_date, description)
       VALUES ($1, $2, $3, $4, $5)
-      RETURNING id, user_id, amount, original_currency, transaction_date, description;
+      RETURNING  amount, original_currency, transaction_date, description;
     `;
     const values = [
       userId,
@@ -40,7 +40,7 @@ exports.createTransaction = async (req, res) => {
     const { rows } = await db.query(query, values);
 
     // Return the created transaction
-    res.status(201).json(rows[0]);
+    res.status(201).json({"transaction":rows[0]});
   } catch (error) {
     res.status(500).json({ message: 'Error creating transaction', error: error.message });
   }
