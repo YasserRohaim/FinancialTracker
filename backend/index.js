@@ -3,14 +3,39 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+dotenv.config();
+const PORT =  process.env.BACK_END_PORT;
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
+      description: "API documentation",
+    },
+    servers: [
+      { url: `http://localhost:${PORT}` },
+    ],
+  },
+  apis: ["./routers/*.js"], 
+};
+
+const app = express();
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 
 const userRouter = require('./routers/userRoutes');
 const transactionRouter = require('./routers/transactionRoutes');
 
 dotenv.config();
 
-const app = express();
-const PORT =  process.env.BACK_END_PORT;
 
 // Middleware
 app.use(cors()); 
