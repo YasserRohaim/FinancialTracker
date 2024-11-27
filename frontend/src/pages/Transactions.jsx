@@ -162,7 +162,7 @@ const Transactions = () => {
                 <thead>
                   <tr>
                     <th>Amount</th>
-                    <th>Currency</th>
+                    <th>Original Currency</th>
                     <th>Date</th>
                     <th>Description</th>
                     <th>Actions</th>
