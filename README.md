@@ -22,6 +22,15 @@ A financial tracker web application using NodeJS and ReactJS
   
 
 ---
+## **Backend Endpoints**
+| HTTP Verbs | Endpoints                  | Action                                                              |
+|------------|----------------------------|---------------------------------------------------------------------|
+| POST       | /users/signup              | To sign up a new user account                                       |
+| POST       | /users/signin              | To log in an existing user account                                  |
+| POST       | /transactions/create       | To create a new transaction                                         |
+| GET        | /transactions/getall       | To retrieve all transactions belonging to the logged-in user        |
+| DELETE     | /transactions/delete/:id   | To delete a specific transaction by ID                              |
+
 
   
 
