@@ -1,16 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Signup from './pages/Signup';
-import Login from './pages/Login';
-import Transactions from './pages/Transactions';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import SigninSignup from "./pages/SinginSignup";
+import Transactions from "./pages/Transactions";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        {/* Unified Signin/Signup Component */}
+        <Route path="/signup" element={<SigninSignup />} />
+        <Route path="/signin" element={<SigninSignup />} />
+
+        {/* Transactions page (protected route logic can be added later) */}
         <Route path="/transactions" element={<Transactions />} />
+
+        {/* Default route redirects to /signin */}
+        <Route path="*" element={<Navigate to="/signin" />} />
       </Routes>
     </Router>
   );
