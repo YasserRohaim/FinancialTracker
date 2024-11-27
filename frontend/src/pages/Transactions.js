@@ -6,7 +6,7 @@ const TransactionsPage = () => {
 
   useEffect(() => {
     // Fetch transactions on component mount
-    fetch("http://localhost:3001/api/transactions/getall", {
+    fetch("http://localhost:3001/transactions/getall", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, // Add authentication if needed
       },

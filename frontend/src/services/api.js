@@ -3,11 +3,11 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3001'; // Backend base URL
 
 export const signupUser = async (userData) => {
-  return axios.post(`${API_URL}/user/signup`, userData);
+  return axios.post(`${API_URL}/users/signup`, userData);
 };
 
 export const loginUser = async (credentials) => {
-  return axios.post(`${API_URL}/user/signin`, credentials);
+  return axios.post(`${API_URL}/users/signin`, credentials);
 };
 
 export const fetchTransactions = async (token) => {
