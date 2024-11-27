@@ -29,13 +29,7 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node backend/index.js",
-    "client": "npm start --prefix frontend",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "server": "node index.js"
   },
   "eslintConfig": {
     "extends": [
