@@ -91,7 +91,7 @@ Node.js, PostgreSQL
   
 
 3. intialize the .env file in the following format:
-
+	backend/.env:
 		JWT_SECRET= GOOD_SECRET
 
 		JWT_EXPIRES_IN= 7d
@@ -109,26 +109,30 @@ Node.js, PostgreSQL
 		DB_PORT= DB_PORT
 
 		BACK_END_PORT=3001
+	frontend/.env:
+		REACT_APP_BACK_END_URL=http://localhost:3001
+
+	
+	
 
   
   
 
 4. Install the requirements
+		cp backend
 
 		npm install
-
-		cd frontend
+		
+		cd ../frontend
 
 		npm install
 
   
 
-5. get back to the root directory and run the server
-
-		cd ..
+5.  run the react app 
 
 		npm run start
 
   
 
-6. open the react app on http://localhost:3001
+6. open the react app on http://localhost:3000

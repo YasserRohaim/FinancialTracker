@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001'; // Backend base URL
+const API_URL = process.env.REACT_APP_BACK_END_URL; // Backend base URL
+console.log(API_URL);
 
 export const signupUser = async (userData) => {
   return axios.post(`${API_URL}/users/signup`, userData);

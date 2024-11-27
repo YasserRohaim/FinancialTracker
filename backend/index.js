@@ -6,8 +6,7 @@ const helmet = require('helmet');
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-dotenv.config();
-const PORT =  process.env.BACK_END_PORT;
+
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -18,24 +17,24 @@ const swaggerOptions = {
       description: "API documentation",
     },
     servers: [
-      { url: `http://localhost:${PORT}` },
+      { url: "http://localhost:3001" },
     ],
   },
-  apis: ["./routers/*.js"], 
+  apis: ["./routes/*.js"], 
 };
-
-const app = express();
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
+app.listen(3000, () => console.log("Server running on http://localhost:3000"));
 
 const userRouter = require('./routers/userRoutes');
 const transactionRouter = require('./routers/transactionRoutes');
 
 dotenv.config();
 
+const app = express();
+const PORT =  process.env.BACK_END_PORT;
 
 // Middleware
 app.use(cors()); 
