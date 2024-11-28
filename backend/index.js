@@ -3,30 +3,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const swaggerJsdoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
 
 
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "My API",
-      version: "1.0.0",
-      description: "API documentation",
-    },
-    servers: [
-      { url: "http://localhost:3001" },
-    ],
-  },
-  apis: ["./routes/*.js"], 
-};
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
 
 const userRouter = require('./routers/userRoutes');
 const transactionRouter = require('./routers/transactionRoutes');
