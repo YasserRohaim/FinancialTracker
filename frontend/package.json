@@ -21,10 +21,8 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "server": "node ../backend/index.js",
     "frontend": "react-scripts start",
-    "start": "concurrently  \"npm run server\" \"npm run frontend\"",
-    "build": "react-scripts build",
+      "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

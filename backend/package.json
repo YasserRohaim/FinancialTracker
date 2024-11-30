@@ -1,5 +1,5 @@
 {
-  "name": "financialtracker",
+  "name": "backend",
   "version": "1.0.0",
   "description": "A financial tracker web application using NodeJS and ReactJS",
   "main": "index.js",

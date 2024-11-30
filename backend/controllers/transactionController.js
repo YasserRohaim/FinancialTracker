@@ -59,9 +59,7 @@ var budget = userRow.rows[0].current_budget;
       [userId]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(200).json({ message: 'No transactions found for this user.' });
-    }
+    
 
     let transactions = result.rows;
 
@@ -76,8 +74,7 @@ var budget = userRow.rows[0].current_budget;
 
       transactions = transactions.map((transaction) => ({
         ...transaction,
-        amount: Math.round(transaction.amount * rate*100)/100,
-        currency: userCurrency,
+        amount: Math.round(transaction.amount * rate*100)/100
       }));
       budget=budget*rate;
       budget=Math.round(budget * 100) / 100;

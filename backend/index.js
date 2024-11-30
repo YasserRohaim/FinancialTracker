@@ -1,4 +1,4 @@
-require('dotenv').config({ path: './backend/.env' });
+require('dotenv').config({path:"backend/.env"});
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -8,6 +8,7 @@ const helmet = require('helmet');
 
 const userRouter = require('./routers/userRoutes');
 const transactionRouter = require('./routers/transactionRoutes');
+
 
 
 const app = express();
