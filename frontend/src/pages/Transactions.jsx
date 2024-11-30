@@ -17,7 +17,7 @@ const Transactions = () => {
   const [message, setMessage] = useState("");
   const [budget, setBudget] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
-  const [userCurrency, setUserCurrency] = useState(""); // New state for user currency
+  const [userCurrency, setUserCurrency] = useState(""); // User's currency
   const navigate = useNavigate();
 
   const calculateRemainingBudget = (budget, transactions) => {
@@ -75,13 +75,13 @@ const Transactions = () => {
     fetchTransactions(token)
       .then((res) => {
         const fetchedTransactions = res.data.transactions || [];
-        const userBudget = Number(res.data.budget || 0);
-        const userCurrency = res.data.currency || "N/A"; // Extract user currency from response
+        const budget = Number(res.data.budget || 0);
+        const userCurrency = res.data.currency || "N/A";
 
         setTransactions(fetchedTransactions);
-        setBudget(userBudget);
-        setUserCurrency(userCurrency); // Update state with user currency
-        setRemainingBudget(calculateRemainingBudget(userBudget, fetchedTransactions));
+        setBudget(budget);
+        setUserCurrency(userCurrency);
+        setRemainingBudget(calculateRemainingBudget(budget, fetchedTransactions));
         setChartData(generateChartData(fetchedTransactions));
       })
       .catch((err) => {
@@ -149,9 +149,8 @@ const Transactions = () => {
         <button onClick={logout} className="logout-button">Logout</button>
       </header>
       <div className="budget-overview">
-        <p>Budget: {budget}</p>
-        <p>Remaining Budget: {remainingBudget}</p>
-        <p>User Currency: {userCurrency}</p> {/* Display user currency */}
+        <p>Budget: {budget} {userCurrency}</p>
+        <p>Remaining Budget: {remainingBudget} {userCurrency}</p>
       </div>
       <div className="content-grid">
         <div className="card">

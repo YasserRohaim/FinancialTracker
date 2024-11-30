@@ -58,13 +58,15 @@ const SigninSignup = () => {
             budget: values.budget,
             preferredCurrency: values.preferredCurrency,
           });
-          setMessage("Signup successful! Redirecting to transactions...");
+          setMessage("Signup successful! Redirecting to signin...");
+          navigate("/users/signin");
         } else {
           response = await loginUser({
             email: values.email,
             password: values.password,
           });
           setMessage("Login successful! Redirecting to transactions...");
+          navigate("/transactions");
         }
 
         // Save token to localStorage
@@ -72,7 +74,7 @@ const SigninSignup = () => {
         localStorage.setItem("authToken", token);
 
         // Redirect to transactions page
-        navigate("/transactions");
+        
       } catch (error) {
         setMessage(error.response?.data?.message || "Something went wrong.");
       }

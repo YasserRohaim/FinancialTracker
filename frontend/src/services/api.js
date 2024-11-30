@@ -28,3 +28,9 @@ export const deleteTransaction = async (id, token) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+export const editBudget = async (budget, token) => {
+  return axios.put(`${API_URL}/transactions/edit-budget/`, budget,{
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
