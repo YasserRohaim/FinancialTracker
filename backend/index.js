@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require('express');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -9,10 +9,10 @@ const helmet = require('helmet');
 const userRouter = require('./routers/userRoutes');
 const transactionRouter = require('./routers/transactionRoutes');
 
-dotenv.config();
+
 
 const app = express();
-const PORT =  process.env.BACK_END_PORT;
+const PORT = 3001;
 
 // Middleware
 app.use(cors()); 

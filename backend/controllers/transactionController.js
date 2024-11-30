@@ -51,7 +51,7 @@ exports.getUserTransactions = async (req, res) => {
 [userId]);
 console.log(userRow);
 const userCurrency= userRow.rows[0].base_currency;
-const budget = userRow.rows[0].current_budget;
+var budget = userRow.rows[0].current_budget;
 
   try {
     const result = await db.query(
@@ -60,7 +60,7 @@ const budget = userRow.rows[0].current_budget;
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: 'No transactions found for this user.' });
+      return res.status(200).json({ message: 'No transactions found for this user.' });
     }
 
     let transactions = result.rows;
@@ -76,11 +76,14 @@ const budget = userRow.rows[0].current_budget;
 
       transactions = transactions.map((transaction) => ({
         ...transaction,
-        amount: transaction.amount * rate,
+        amount: Math.round(transaction.amount * rate*100)/100,
         currency: userCurrency,
       }));
       budget=budget*rate;
+      budget=Math.round(budget * 100) / 100;
+
     }
+    
 
     res.status(200).json({
       message: 'Transactions retrieved successfully',

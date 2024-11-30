@@ -3,10 +3,10 @@ const dotenv= require('dotenv');
 dotenv.config();
 const pool =  new Pool({
   user: "postgres",
-  host: process.env.DB_HOST, 
-  database: process.env.DB_NAME,
+  host: "localhost", 
+  database: "finance_tracker",
   password: "postgres",
-  port: process.env.DB_PORT, 
+  port: 5432, 
 });
 
 // Test database connection

@@ -1,13 +1,25 @@
 const db = require('../models/db.js');
 const bcrypt= require('bcrypt')
 const jwt =require('jsonwebtoken')
+const getConversionRates = require('../utilities/getConversionRates.js');
+
 
 exports.createUser = async (req, res) => {
-    const { name, email, password, budget, preferredCurrency } = req.body;
+    let { name, email, password, budget, preferredCurrency } = req.body;
     const saltRounds = 10; 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   try {
+    if (preferredCurrency!="USD"){
+      const conversionRates = await getConversionRates(preferredCurrency, ["USD"]); // Get conversion rate from user's currency to USD
+      const rate = conversionRates["USD"];
+      if(!rate){
+        console.error("failed to retrieve conversion rate");
+
+        
+      }
+      budget=budget*rate;
+    }
     const query = `
       INSERT INTO users (name, email, password, current_budget, base_currency)
       VALUES ($1, $2, $3, $4, $5)
