@@ -126,5 +126,36 @@ const budget = userRow.rows[0].current_budget;
       res.status(500).json({ message: 'Error deleting transaction', error });
     }
   };
+
+  exports.editBudget = async (req, res) => {
+    try{
+    const userId= req.user.id;
+    const {budget}=req.body;
+    const userRow =await db.query ('SELECT base_currency,current_budget FROM users WHERE id = $1 ',[userId]);
+    const userCurrency= userRow.rows[0].base_currency;
+    if (userCurrency!="USD"){
+      const conversionRates = await getConversionRates(userCurrency, ["USD"]); // Get conversion rate from USD to user's currency
+      const rate = conversionRates[USD];
+
+      if (!rate) {
+        return res.status(400).json({ message: 'Unable to fetch conversion rate for your currency.' });
+      }
+      budget=budget*rate;
+    }
+    const query= "UPDATE users SET current_budget=$1 WHERE id=$2;"
+
+    result= await db.query(query,[budget,userId]);
+    res.status(200).json({message:'editted budget successfully'});
+
+
+  }
+  catch (error) {
+    console.error('Error editting budget:', error);
+    console.log(error);
+    res.status(500).json({ message: 'Error editting budget', error });
+  }
+
+
+  };
   
   
