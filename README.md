@@ -129,9 +129,11 @@ Node.js, PostgreSQL
 
   
 
-5.  run the react app 
+5.  run the react app and the server
 
-		npm run start
+		npm run frontend
+		cd ../backend
+		node index.js
 
   
 
