@@ -51,6 +51,7 @@ exports.getUserTransactions = async (req, res) => {
 [userId]);
 console.log(userRow);
 const userCurrency= userRow.rows[0].base_currency;
+console.log(userCurrency);
 var budget = userRow.rows[0].current_budget;
 
   try {
@@ -67,6 +68,7 @@ var budget = userRow.rows[0].current_budget;
     if (userCurrency !== 'USD') {
       const conversionRates = await getConversionRates('USD', [userCurrency]); // Get conversion rate from USD to user's currency
       const rate = conversionRates[userCurrency];
+      console.log(conversionRates);
 
       if (!rate) {
         return res.status(400).json({ message: 'Unable to fetch conversion rate for the specified currency.' });

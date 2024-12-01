@@ -114,8 +114,10 @@ const Transactions = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const token = localStorage.getItem("authToken");
-        const res = await createTransaction(values, token);
-        setTransactions((prev) => [...prev, res.data.transaction]);
+        await createTransaction(values, token);
+        const res = await fetchTransactions(token); // Await the resolution
+        const fetchedTransactions = res.data.transactions || [];
+        setTransactions(fetchedTransactions); // Set the actual transactions array
         resetForm();
         setMessage("Transaction added successfully!");
       } catch (err) {
@@ -123,6 +125,7 @@ const Transactions = () => {
         console.error(err);
       }
     },
+    
   });
 
   const handleDelete = async (id) => {
